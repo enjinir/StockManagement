@@ -1,0 +1,5 @@
+F:\visualstudio\StockManagement\DatabaseHelper\bin\Debug\DatabaseHelper.dll
+F:\visualstudio\StockManagement\DatabaseHelper\bin\Debug\DatabaseHelper.pdb
+F:\visualstudio\StockManagement\DatabaseHelper\obj\Debug\DatabaseHelper.csprojResolveAssemblyReference.cache
+F:\visualstudio\StockManagement\DatabaseHelper\obj\Debug\DatabaseHelper.dll
+F:\visualstudio\StockManagement\DatabaseHelper\obj\Debug\DatabaseHelper.pdb

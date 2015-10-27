@@ -1,0 +1,13 @@
+F:\visualstudio\StockManagement\StockManagement\bin\Debug\StockManagement.exe.config
+F:\visualstudio\StockManagement\StockManagement\bin\Debug\StockManagement.exe
+F:\visualstudio\StockManagement\StockManagement\bin\Debug\StockManagement.pdb
+F:\visualstudio\StockManagement\StockManagement\bin\Debug\DatabaseHelper.dll
+F:\visualstudio\StockManagement\StockManagement\bin\Debug\DatabaseHelper.pdb
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.csprojResolveAssemblyReference.cache
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.Views.HomeForm.resources
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.Views.LoginForm.resources
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.Properties.Resources.resources
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.Views.RegisterForm.resources
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.csproj.GenerateResource.Cache
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.exe
+F:\visualstudio\StockManagement\StockManagement\obj\Debug\StockManagement.pdb
