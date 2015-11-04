@@ -56,6 +56,11 @@
             // ProductCount
             // 
             this.ProductCount.Location = new System.Drawing.Point(97, 48);
+            this.ProductCount.Maximum = new decimal(new int[] {
+            5000000,
+            0,
+            0,
+            0});
             this.ProductCount.Name = "ProductCount";
             this.ProductCount.Size = new System.Drawing.Size(120, 20);
             this.ProductCount.TabIndex = 6;
@@ -113,6 +118,7 @@
             this.DeleteButton.TabIndex = 7;
             this.DeleteButton.Text = "Delete Product";
             this.DeleteButton.UseVisualStyleBackColor = true;
+            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
             // 
             // SaveButton
             // 
@@ -122,6 +128,7 @@
             this.SaveButton.TabIndex = 6;
             this.SaveButton.Text = "Save Product";
             this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // CreateButton
             // 
@@ -131,6 +138,7 @@
             this.CreateButton.TabIndex = 5;
             this.CreateButton.Text = "Create Product";
             this.CreateButton.UseVisualStyleBackColor = true;
+            this.CreateButton.Click += new System.EventHandler(this.CreateButton_Click);
             // 
             // label4
             // 
@@ -215,6 +223,7 @@
             this.UpdateStockButton.TabIndex = 9;
             this.UpdateStockButton.Text = "Update Stock";
             this.UpdateStockButton.UseVisualStyleBackColor = true;
+            this.UpdateStockButton.Click += new System.EventHandler(this.UpdateStockButton_Click);
             // 
             // ProductListBox
             // 

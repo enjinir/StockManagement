@@ -85,7 +85,6 @@ namespace DatabaseHelper
             return products;
         }
 
-
         public static List<User> GetUsers()
         {
             List<User> users = new List<User>();
@@ -137,6 +136,75 @@ namespace DatabaseHelper
             }
 
             return stockInfo;
+        }
+
+        public static bool UpdateStock(Product product, int count)
+        {
+            string query = "";
+
+            if (GetStockInfo(product) != null)
+            {
+                query += "Update Stock set Count=@count from Stock Where ProductId=@productid";
+
+            }
+            else
+            {
+                query += "Insert Into Stock values (@productid,@count,5)";
+            }
+
+            SqlCommand command = new SqlCommand(query,_connection);
+            command.Parameters.Add(new SqlParameter("@productid", product.ProductId));
+            command.Parameters.Add(new SqlParameter("@count", count));
+            int rows = command.ExecuteNonQuery();
+            return rows > 0;
+
+        }
+
+        public static bool CreateProduct(Product product)
+        {
+            string query="";
+            if (!ProductExists(product))
+            {
+                query = "insert into product (Name,OwnerId) values (@name , @ownerid)";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.Add("@name", product.Name);
+                command.Parameters.Add("@ownerid", product.OwnerId);
+                int rows = command.ExecuteNonQuery();
+                return rows > 0;
+
+            }
+            else
+                return false;
+        }
+
+        private static bool ProductExists(Product product)
+        {
+            string query = "Select 1 from Product where name=@name";
+            SqlCommand command = new SqlCommand(query,_connection);
+            command.Parameters.Add("@name", product.Name);
+            var result = command.ExecuteScalar();
+            return result != null;
+        }
+
+        public static bool UpdateProduct(Product product)
+        {
+            string query = "Update Product Set Name = @name, OwnerId=@ownerid from Product Where ProductId=@productid";
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.Add(new SqlParameter("@name",product.Name));
+            command.Parameters.Add(new SqlParameter("@ownerid", product.OwnerId));
+            command.Parameters.Add(new SqlParameter("@productid", product.ProductId));
+            int rows = command.ExecuteNonQuery();
+            return rows > 0;
+
+        }
+
+        public static bool DeleteProduct(Product product)
+        {
+            string query = "Delete from Product where ProductId=@productid";
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.Add("@productid", product.ProductId);
+            int rows = command.ExecuteNonQuery();
+            return rows > 0;
         }
     }
 }
