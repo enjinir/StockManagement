@@ -12,6 +12,7 @@ namespace DatabaseHelper
     public static class DBHelper
     {
         private static SqlConnection _connection;
+        private static User CurrentUser { get; set; }
 
         public static bool IsConnected 
         { 
@@ -54,18 +55,54 @@ namespace DatabaseHelper
 
             var result = command.ExecuteScalar();
             
+            if(result != null) 
+            {
+                CurrentUser = GetUsers().Where(u => u.Username == username).FirstOrDefault();
+            }
+
             return result != null;
         }
 
-        public static List<Product> GetProducts() 
+        public static List<Product> GetProducts()
         {
             List<Product> products = new List<Product>();
 
             string query = "SELECT p.ProductId, p.Name, p.OwnerId, u.FullName "
                          + "FROM dbo.[Product] p "
-                         + "INNER JOIN dbo.[User] u ON u.UserId = p.OwnerId";
+                         + "INNER JOIN dbo.[User] u ON u.UserId = p.OwnerId "
+                         + "WHERE p.OwnerId = @ownerid";
 
             SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.Add("@ownerid", CurrentUser.UserId);
+
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Product p = new Product();
+                    p.ProductId = reader.GetGuid(0);
+                    p.Name = reader.GetString(1);
+                    p.OwnerId = reader.GetGuid(2);
+                    p.OwnerName = reader.GetString(3);
+
+                    products.Add(p);
+                }
+            }
+
+            return products;
+        }
+
+        public static List<Product> GetProducts(Guid userId)
+        {
+            List<Product> products = new List<Product>();
+
+            string query = "SELECT p.ProductId, p.Name, p.OwnerId, u.FullName "
+                         + "FROM dbo.[Product] p "
+                         + "INNER JOIN dbo.[User] u ON u.UserId = p.OwnerId "
+                         + "WHERE p.OwnerId = @ownerid";
+
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.Add("@ownerid", userId);
 
 
             using (SqlDataReader reader = command.ExecuteReader())
@@ -113,7 +150,6 @@ namespace DatabaseHelper
             return users;
         }
 
-
         public static StockInfo GetStockInfo(Product selectedProduct)
         {
             StockInfo stockInfo = null;
@@ -140,12 +176,13 @@ namespace DatabaseHelper
 
         public static bool UpdateStock(Product product, int count)
         {
-            string query = "";
+            // TODO: Add unit price 
 
-            if (GetStockInfo(product) != null)
+            string query = "";
+            StockInfo stockInfo = GetStockInfo(product);
+            if (stockInfo != null)
             {
                 query += "Update Stock set Count=@count from Stock Where ProductId=@productid";
-
             }
             else
             {
@@ -156,6 +193,12 @@ namespace DatabaseHelper
             command.Parameters.Add(new SqlParameter("@productid", product.ProductId));
             command.Parameters.Add(new SqlParameter("@count", count));
             int rows = command.ExecuteNonQuery();
+            
+            if(rows > 0) 
+            {
+                LogUpdate(CurrentUser.UserId, product.ProductId, "Stock updated from " + ((stockInfo != null) ? stockInfo.Count : 0) +  " to " + count);
+            }
+
             return rows > 0;
 
         }
@@ -170,8 +213,8 @@ namespace DatabaseHelper
                 command.Parameters.Add("@name", product.Name);
                 command.Parameters.Add("@ownerid", product.OwnerId);
                 int rows = command.ExecuteNonQuery();
+                
                 return rows > 0;
-
             }
             else
                 return false;
@@ -206,5 +249,80 @@ namespace DatabaseHelper
             int rows = command.ExecuteNonQuery();
             return rows > 0;
         }
+
+        public static bool Register(User user)
+        {
+            if (!UserExists(user))
+            {
+                string query = "Insert into [User](Fullname , Email , Username , Password , RegistrationDate) Values (@fullname, @email , @username , @password , @registerdate)";
+                SqlCommand command = new SqlCommand(query, _connection);
+                command.Parameters.Add("@fullname", user.FullName);
+                command.Parameters.Add("@email", user.Email);
+                command.Parameters.Add("@username", user.Username);
+                command.Parameters.Add("@password", user.Password);
+                command.Parameters.Add("@registerdate", user.RegistrationDate);
+                int rowCount = command.ExecuteNonQuery();
+                return rowCount != 0; 
+            }
+
+            return false;
+        }
+
+        private static bool UserExists(User user)
+        {
+            string query = "SELECT 1 FROM [User] WHERE Username = @username or Email = @email";
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.Add("@username", user.Username);
+            command.Parameters.Add("@email", user.Email);
+            var results = command.ExecuteScalar();
+            return results != null;
+        }
+
+        private static void LogCreate(Guid currentUserId, Guid recordId, string details)
+        {
+            AddLog(new OperationLog()
+            {
+                UserId = currentUserId,
+                RecordId = recordId,
+                OperationType = "Create",
+                OperationDetails = details,
+                OperationDate = DateTime.Now
+            });
+        }
+        private static void LogUpdate(Guid currentUserId, Guid recordId, string details)
+        {
+            AddLog(new OperationLog()
+            {
+                UserId = currentUserId,
+                RecordId = recordId,
+                OperationType = "Update",
+                OperationDetails = details,
+                OperationDate = DateTime.Now
+            });
+        }
+        private static void LogDelete(Guid currentUserId, Guid recordId, string details)
+        {
+            AddLog(new OperationLog()
+            {
+                UserId = currentUserId,
+                RecordId = recordId,
+                OperationType = "Delete",
+                OperationDetails = details,
+                OperationDate = DateTime.Now
+            });
+        }
+        private static void AddLog(OperationLog log)
+        {
+            string query = "INSERT INTO OperationLog (UserId, RecordId, OperationType, OperationDetails, OperationDate) "
+                         + "VALUES (@UserId, @RecordId, @Type, @Details, @Date)";
+            SqlCommand command = new SqlCommand(query, _connection);
+            command.Parameters.Add("@UserId", log.UserId);
+            command.Parameters.Add("@RecordId", log.RecordId);
+            command.Parameters.Add("@Type", log.OperationType);
+            command.Parameters.Add("@Details", log.OperationDetails);
+            command.Parameters.Add("@Date", log.OperationDate);
+            command.ExecuteNonQuery();
+        }
+
     }
 }

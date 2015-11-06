@@ -28,135 +28,123 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.RegisterButton = new System.Windows.Forms.Button();
-            this.UsernameLabel = new System.Windows.Forms.Label();
-            this.UsernameTextBox = new System.Windows.Forms.TextBox();
-            this.EmailLabel = new System.Windows.Forms.Label();
-            this.EmailTextBox = new System.Windows.Forms.TextBox();
-            this.PasswordLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.NameTextBox = new System.Windows.Forms.TextBox();
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
-            this.FullNameLabel = new System.Windows.Forms.Label();
-            this.FullNameTextBox = new System.Windows.Forms.TextBox();
-            this.panel1.SuspendLayout();
+            this.UsernameTextBox = new System.Windows.Forms.TextBox();
+            this.EmailTextBox = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // panel1
+            // label1
             // 
-            this.panel1.Controls.Add(this.FullNameLabel);
-            this.panel1.Controls.Add(this.FullNameTextBox);
-            this.panel1.Controls.Add(this.PasswordLabel);
-            this.panel1.Controls.Add(this.PasswordTextBox);
-            this.panel1.Controls.Add(this.EmailLabel);
-            this.panel1.Controls.Add(this.EmailTextBox);
-            this.panel1.Controls.Add(this.RegisterButton);
-            this.panel1.Controls.Add(this.UsernameLabel);
-            this.panel1.Controls.Add(this.UsernameTextBox);
-            this.panel1.Location = new System.Drawing.Point(12, 12);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(347, 209);
-            this.panel1.TabIndex = 5;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 33);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Full Name";
             // 
-            // RegisterButton
+            // label2
             // 
-            this.RegisterButton.Location = new System.Drawing.Point(229, 152);
-            this.RegisterButton.Name = "RegisterButton";
-            this.RegisterButton.Size = new System.Drawing.Size(75, 23);
-            this.RegisterButton.TabIndex = 5;
-            this.RegisterButton.Text = "Register";
-            this.RegisterButton.UseVisualStyleBackColor = true;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 104);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Password";
             // 
-            // UsernameLabel
+            // label3
             // 
-            this.UsernameLabel.AutoSize = true;
-            this.UsernameLabel.Location = new System.Drawing.Point(42, 37);
-            this.UsernameLabel.Name = "UsernameLabel";
-            this.UsernameLabel.Size = new System.Drawing.Size(55, 13);
-            this.UsernameLabel.TabIndex = 2;
-            this.UsernameLabel.Text = "Username";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 80);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Username";
             // 
-            // UsernameTextBox
+            // label4
             // 
-            this.UsernameTextBox.Location = new System.Drawing.Point(137, 34);
-            this.UsernameTextBox.Name = "UsernameTextBox";
-            this.UsernameTextBox.Size = new System.Drawing.Size(167, 20);
-            this.UsernameTextBox.TabIndex = 0;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 57);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(36, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "E-Mail";
             // 
-            // EmailLabel
+            // NameTextBox
             // 
-            this.EmailLabel.AutoSize = true;
-            this.EmailLabel.Location = new System.Drawing.Point(42, 92);
-            this.EmailLabel.Name = "EmailLabel";
-            this.EmailLabel.Size = new System.Drawing.Size(36, 13);
-            this.EmailLabel.TabIndex = 7;
-            this.EmailLabel.Text = "E-Mail";
-            // 
-            // EmailTextBox
-            // 
-            this.EmailTextBox.Location = new System.Drawing.Point(137, 89);
-            this.EmailTextBox.Name = "EmailTextBox";
-            this.EmailTextBox.PasswordChar = '*';
-            this.EmailTextBox.Size = new System.Drawing.Size(167, 20);
-            this.EmailTextBox.TabIndex = 6;
-            // 
-            // PasswordLabel
-            // 
-            this.PasswordLabel.AutoSize = true;
-            this.PasswordLabel.Location = new System.Drawing.Point(42, 118);
-            this.PasswordLabel.Name = "PasswordLabel";
-            this.PasswordLabel.Size = new System.Drawing.Size(53, 13);
-            this.PasswordLabel.TabIndex = 9;
-            this.PasswordLabel.Text = "Password";
+            this.NameTextBox.Location = new System.Drawing.Point(77, 30);
+            this.NameTextBox.Name = "NameTextBox";
+            this.NameTextBox.Size = new System.Drawing.Size(100, 20);
+            this.NameTextBox.TabIndex = 4;
             // 
             // PasswordTextBox
             // 
-            this.PasswordTextBox.Location = new System.Drawing.Point(137, 115);
+            this.PasswordTextBox.Location = new System.Drawing.Point(77, 101);
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.PasswordChar = '*';
-            this.PasswordTextBox.Size = new System.Drawing.Size(167, 20);
-            this.PasswordTextBox.TabIndex = 8;
+            this.PasswordTextBox.Size = new System.Drawing.Size(100, 20);
+            this.PasswordTextBox.TabIndex = 5;
             // 
-            // FullNameLabel
+            // UsernameTextBox
             // 
-            this.FullNameLabel.AutoSize = true;
-            this.FullNameLabel.Location = new System.Drawing.Point(42, 63);
-            this.FullNameLabel.Name = "FullNameLabel";
-            this.FullNameLabel.Size = new System.Drawing.Size(54, 13);
-            this.FullNameLabel.TabIndex = 11;
-            this.FullNameLabel.Text = "Full Name";
+            this.UsernameTextBox.Location = new System.Drawing.Point(77, 77);
+            this.UsernameTextBox.Name = "UsernameTextBox";
+            this.UsernameTextBox.Size = new System.Drawing.Size(100, 20);
+            this.UsernameTextBox.TabIndex = 6;
             // 
-            // FullNameTextBox
+            // EmailTextBox
             // 
-            this.FullNameTextBox.Location = new System.Drawing.Point(137, 60);
-            this.FullNameTextBox.Name = "FullNameTextBox";
-            this.FullNameTextBox.Size = new System.Drawing.Size(167, 20);
-            this.FullNameTextBox.TabIndex = 10;
+            this.EmailTextBox.Location = new System.Drawing.Point(77, 54);
+            this.EmailTextBox.Name = "EmailTextBox";
+            this.EmailTextBox.Size = new System.Drawing.Size(100, 20);
+            this.EmailTextBox.TabIndex = 7;
             // 
-            // RegisterForm
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(33, 127);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(124, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Register";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // SignUp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(368, 234);
-            this.Controls.Add(this.panel1);
-            this.Name = "RegisterForm";
-            this.Text = "New Account - Stock Management";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.ClientSize = new System.Drawing.Size(191, 160);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.EmailTextBox);
+            this.Controls.Add(this.UsernameTextBox);
+            this.Controls.Add(this.PasswordTextBox);
+            this.Controls.Add(this.NameTextBox);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Name = "SignUp";
+            this.Text = "SignUp";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button RegisterButton;
-        private System.Windows.Forms.Label UsernameLabel;
-        private System.Windows.Forms.TextBox UsernameTextBox;
-        private System.Windows.Forms.Label FullNameLabel;
-        private System.Windows.Forms.TextBox FullNameTextBox;
-        private System.Windows.Forms.Label PasswordLabel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox NameTextBox;
         private System.Windows.Forms.TextBox PasswordTextBox;
-        private System.Windows.Forms.Label EmailLabel;
+        private System.Windows.Forms.TextBox UsernameTextBox;
         private System.Windows.Forms.TextBox EmailTextBox;
+        private System.Windows.Forms.Button button1;
     }
 }

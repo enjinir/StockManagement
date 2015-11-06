@@ -37,9 +37,16 @@ namespace StockManagement.Views
             }
             else
             {
+                Program.CurrentUser = DBHelper.GetUsers().Where(u => u.Username == username).First();
                 (new HomeForm()).Show();
                 this.Hide();
             }
+        }
+
+        private void RegisterButton_Click(object sender, EventArgs e)
+        {
+            (new RegisterForm()).Show();
+            this.Hide();
         }
     }
 }

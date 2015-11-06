@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBHelper.cs" />
+    <Compile Include="Models\OperationLog.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\StockInfo.cs" />
     <Compile Include="Models\User.cs" />
