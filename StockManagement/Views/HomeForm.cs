@@ -35,35 +35,50 @@ namespace StockManagement.Views
         {
             Product selectedProduct = (Product) ProductListBox.SelectedItem;
 
-            ProductNameTextBox.Text = selectedProduct.Name;
-            ProductNameLabel.Text = selectedProduct.Name;
-            OwnerLabel.Text = selectedProduct.OwnerName;
-
-            // Set default owner in combobox
-            foreach (User u in OwnerComboBox.Items)
+            if (selectedProduct != null)
             {
-                if (u.UserId == selectedProduct.OwnerId)
+
+                ProductNameTextBox.Text = selectedProduct.Name;
+                ProductNameLabel.Text = selectedProduct.Name;
+                OwnerLabel.Text = selectedProduct.OwnerName;
+
+                // Set default owner in combobox
+                foreach (User u in OwnerComboBox.Items)
                 {
-                    OwnerComboBox.SelectedItem = u;
-                    break;
+                    if (u.UserId == selectedProduct.OwnerId)
+                    {
+                        OwnerComboBox.SelectedItem = u;
+                        break;
+                    }
+                }
+
+                // Get count information
+                StockInfo stockInfo = DBHelper.GetStockInfo(selectedProduct);
+
+                if (stockInfo != null)
+                {
+                    ProductCount.Value = stockInfo.Count;
+                }
+                else
+                {
+                    ProductCount.Value = 0;
                 }
             }
-
-            // Get count information
-            StockInfo stockInfo = DBHelper.GetStockInfo(selectedProduct);
-
-            if (stockInfo != null)
-            {
-                ProductCount.Value = stockInfo.Count;
-            }
             else
-            {
+            { // User has clicked an empty area, no products are selected.
+                
+                // Clear all fields
+                ProductNameTextBox.Clear();
+                ProductNameLabel.Text = "Please select a product.";
+                OwnerLabel.Text = string.Empty;
+                OwnerComboBox.SelectedItem = null;
                 ProductCount.Value = 0;
             }
         }
 
         private void HomeForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            DBHelper.LogOperation(Guid.Empty, DBHelper.CurrentUser.FullName + " logged out.", "Logout");
             Application.Exit();
         }
 

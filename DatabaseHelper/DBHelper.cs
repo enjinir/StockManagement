@@ -12,7 +12,7 @@ namespace DatabaseHelper
     public static class DBHelper
     {
         private static SqlConnection _connection;
-        private static User CurrentUser { get; set; }
+        public static User CurrentUser { get; set; }
 
         public static bool IsConnected 
         { 
@@ -58,6 +58,7 @@ namespace DatabaseHelper
             if(result != null) 
             {
                 CurrentUser = GetUsers().Where(u => u.Username == username).FirstOrDefault();
+                LogOperation(Guid.Empty, CurrentUser.FullName + " logged in.", "Login");
             }
 
             return result != null;
@@ -73,7 +74,7 @@ namespace DatabaseHelper
                          + "WHERE p.OwnerId = @ownerid";
 
             SqlCommand command = new SqlCommand(query, _connection);
-            command.Parameters.Add("@ownerid", CurrentUser.UserId);
+            command.Parameters.AddWithValue("@ownerid", CurrentUser.UserId);
 
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -102,7 +103,7 @@ namespace DatabaseHelper
                          + "WHERE p.OwnerId = @ownerid";
 
             SqlCommand command = new SqlCommand(query, _connection);
-            command.Parameters.Add("@ownerid", userId);
+            command.Parameters.AddWithValue("@ownerid", userId);
 
 
             using (SqlDataReader reader = command.ExecuteReader())
@@ -196,7 +197,7 @@ namespace DatabaseHelper
             
             if(rows > 0) 
             {
-                LogUpdate(CurrentUser.UserId, product.ProductId, "Stock updated from " + ((stockInfo != null) ? stockInfo.Count : 0) +  " to " + count);
+                LogUpdate(product.ProductId, "Stock updated from " + ((stockInfo != null) ? stockInfo.Count : 0) +  " to " + count);
             }
 
             return rows > 0;
@@ -208,36 +209,62 @@ namespace DatabaseHelper
             string query="";
             if (!ProductExists(product))
             {
-                query = "insert into product (Name,OwnerId) values (@name , @ownerid)";
+                query = "insert into product (Name,OwnerId) output INSERTED.ProductId values (@name , @ownerid)";
                 SqlCommand command = new SqlCommand(query, _connection);
-                command.Parameters.Add("@name", product.Name);
-                command.Parameters.Add("@ownerid", product.OwnerId);
-                int rows = command.ExecuteNonQuery();
-                
-                return rows > 0;
+                command.Parameters.AddWithValue("@name", product.Name);
+                command.Parameters.AddWithValue("@ownerid", product.OwnerId);
+                var productId = command.ExecuteScalar();
+
+                if (productId != null)
+                {
+                    LogCreate((Guid)productId, "Created product '" + product.Name + "'");
+                }
+
+                return productId != null;
             }
             else
                 return false;
         }
 
-        private static bool ProductExists(Product product)
+        public static bool ProductExists(Product product)
         {
             string query = "Select 1 from Product where name=@name";
             SqlCommand command = new SqlCommand(query,_connection);
-            command.Parameters.Add("@name", product.Name);
+            command.Parameters.AddWithValue("@name", product.Name);
             var result = command.ExecuteScalar();
             return result != null;
         }
 
         public static bool UpdateProduct(Product product)
         {
-            string query = "Update Product Set Name = @name, OwnerId=@ownerid from Product Where ProductId=@productid";
+            bool updated = false;
+
+            string query = "update product set Name = @name, OwnerId=@ownerid "
+                            + "output deleted.Name as [OldName], deleted.OwnerId [OldOwnerId]"
+                            + ", inserted.Name as [NewName], inserted.OwnerId [NewOwnerId]"
+                            + "from Product where ProductId=@productid";
             SqlCommand command = new SqlCommand(query, _connection);
             command.Parameters.Add(new SqlParameter("@name",product.Name));
             command.Parameters.Add(new SqlParameter("@ownerid", product.OwnerId));
             command.Parameters.Add(new SqlParameter("@productid", product.ProductId));
-            int rows = command.ExecuteNonQuery();
-            return rows > 0;
+            
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    updated = true;
+                    string oldName = reader.GetString(0);
+                    string oldOwnerId = reader.GetGuid(1).ToString();
+                    string newName = reader.GetString(2);
+                    string newOwnerId = reader.GetGuid(3).ToString();
+                    
+                    reader.Close();
+                    
+                    LogUpdate(product.ProductId, string.Format("Updated product {0}. Old Name: {1}, Old OwnerId: {2}, New Name: {3}, New OwnerId: {4}", product.ProductId, oldName, oldOwnerId, newName, newOwnerId));
+                }
+            }
+
+            return updated;
 
         }
 
@@ -245,8 +272,14 @@ namespace DatabaseHelper
         {
             string query = "Delete from Product where ProductId=@productid";
             SqlCommand command = new SqlCommand(query, _connection);
-            command.Parameters.Add("@productid", product.ProductId);
+            command.Parameters.AddWithValue("@productid", product.ProductId);
             int rows = command.ExecuteNonQuery();
+
+            if (rows > 0)
+            {
+                LogDelete(Guid.Empty, string.Format("Deleted {0} ({1})", product.Name, product.ProductId));
+            }
+            
             return rows > 0;
         }
 
@@ -256,11 +289,11 @@ namespace DatabaseHelper
             {
                 string query = "Insert into [User](Fullname , Email , Username , Password , RegistrationDate) Values (@fullname, @email , @username , @password , @registerdate)";
                 SqlCommand command = new SqlCommand(query, _connection);
-                command.Parameters.Add("@fullname", user.FullName);
-                command.Parameters.Add("@email", user.Email);
-                command.Parameters.Add("@username", user.Username);
-                command.Parameters.Add("@password", user.Password);
-                command.Parameters.Add("@registerdate", user.RegistrationDate);
+                command.Parameters.AddWithValue("@fullname", user.FullName);
+                command.Parameters.AddWithValue("@email", user.Email);
+                command.Parameters.AddWithValue("@username", user.Username);
+                command.Parameters.AddWithValue("@password", user.Password);
+                command.Parameters.AddWithValue("@registerdate", user.RegistrationDate);
                 int rowCount = command.ExecuteNonQuery();
                 return rowCount != 0; 
             }
@@ -268,59 +301,58 @@ namespace DatabaseHelper
             return false;
         }
 
-        private static bool UserExists(User user)
+        public static bool UserExists(User user)
         {
             string query = "SELECT 1 FROM [User] WHERE Username = @username or Email = @email";
             SqlCommand command = new SqlCommand(query, _connection);
-            command.Parameters.Add("@username", user.Username);
-            command.Parameters.Add("@email", user.Email);
+            command.Parameters.AddWithValue("@username", user.Username);
+            command.Parameters.AddWithValue("@email", user.Email);
             var results = command.ExecuteScalar();
             return results != null;
         }
 
-        private static void LogCreate(Guid currentUserId, Guid recordId, string details)
+        public static void LogCreate(Guid recordId, string details)
+        {
+            LogOperation(recordId, details, "Create");
+        }
+        public static void LogUpdate(Guid recordId, string details)
+        {
+            LogOperation(recordId, details, "Update");
+        }
+        public static void LogDelete(Guid recordId, string details)
+        {
+            LogOperation(recordId, details, "Delete");
+        }
+        public static void LogOperation(Guid recordId, string details, string type)
         {
             AddLog(new OperationLog()
             {
-                UserId = currentUserId,
+                UserId = CurrentUser.UserId,
                 RecordId = recordId,
-                OperationType = "Create",
+                OperationType = type,
                 OperationDetails = details,
                 OperationDate = DateTime.Now
             });
         }
-        private static void LogUpdate(Guid currentUserId, Guid recordId, string details)
-        {
-            AddLog(new OperationLog()
-            {
-                UserId = currentUserId,
-                RecordId = recordId,
-                OperationType = "Update",
-                OperationDetails = details,
-                OperationDate = DateTime.Now
-            });
-        }
-        private static void LogDelete(Guid currentUserId, Guid recordId, string details)
-        {
-            AddLog(new OperationLog()
-            {
-                UserId = currentUserId,
-                RecordId = recordId,
-                OperationType = "Delete",
-                OperationDetails = details,
-                OperationDate = DateTime.Now
-            });
-        }
-        private static void AddLog(OperationLog log)
+        public static void AddLog(OperationLog log)
         {
             string query = "INSERT INTO OperationLog (UserId, RecordId, OperationType, OperationDetails, OperationDate) "
                          + "VALUES (@UserId, @RecordId, @Type, @Details, @Date)";
             SqlCommand command = new SqlCommand(query, _connection);
-            command.Parameters.Add("@UserId", log.UserId);
-            command.Parameters.Add("@RecordId", log.RecordId);
-            command.Parameters.Add("@Type", log.OperationType);
-            command.Parameters.Add("@Details", log.OperationDetails);
-            command.Parameters.Add("@Date", log.OperationDate);
+            command.Parameters.AddWithValue("@UserId", log.UserId);
+            
+            if (log.RecordId != Guid.Empty)
+            {
+                command.Parameters.AddWithValue("@RecordId", log.RecordId); 
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@RecordId", DBNull.Value); 
+            }
+            
+            command.Parameters.AddWithValue("@Type", log.OperationType);
+            command.Parameters.AddWithValue("@Details", log.OperationDetails);
+            command.Parameters.AddWithValue("@Date", log.OperationDate);
             command.ExecuteNonQuery();
         }
 
