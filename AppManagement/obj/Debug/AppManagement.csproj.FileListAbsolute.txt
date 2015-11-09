@@ -1,0 +1,8 @@
+F:\visualstudio\StockManagement\AppManagement\bin\AppManagement.dll.config
+F:\visualstudio\StockManagement\AppManagement\bin\AppManagement.dll
+F:\visualstudio\StockManagement\AppManagement\bin\AppManagement.pdb
+F:\visualstudio\StockManagement\AppManagement\bin\DatabaseHelper.dll
+F:\visualstudio\StockManagement\AppManagement\bin\DatabaseHelper.pdb
+F:\visualstudio\StockManagement\AppManagement\obj\Debug\AppManagement.csprojResolveAssemblyReference.cache
+F:\visualstudio\StockManagement\AppManagement\obj\Debug\AppManagement.dll
+F:\visualstudio\StockManagement\AppManagement\obj\Debug\AppManagement.pdb

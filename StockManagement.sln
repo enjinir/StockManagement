@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockManagement", "StockMan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseHelper", "DatabaseHelper\DatabaseHelper.csproj", "{CA6E7EB9-6590-4DAD-A6B7-0BA468F81C4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppManagement", "AppManagement\AppManagement.csproj", "{31BC162A-90BB-49DE-852F-BA1640BFA7AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CA6E7EB9-6590-4DAD-A6B7-0BA468F81C4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA6E7EB9-6590-4DAD-A6B7-0BA468F81C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA6E7EB9-6590-4DAD-A6B7-0BA468F81C4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31BC162A-90BB-49DE-852F-BA1640BFA7AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31BC162A-90BB-49DE-852F-BA1640BFA7AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31BC162A-90BB-49DE-852F-BA1640BFA7AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31BC162A-90BB-49DE-852F-BA1640BFA7AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

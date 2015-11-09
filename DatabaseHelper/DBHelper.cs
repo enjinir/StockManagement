@@ -17,8 +17,15 @@ namespace DatabaseHelper
         public static bool IsConnected 
         { 
             get 
-            { 
-                return _connection.State.Equals(ConnectionState.Open); 
+            {
+                if (_connection != null)
+                {
+                    return _connection.State.Equals(ConnectionState.Open);
+                }
+                else
+                {
+                    return false;
+                }
             } 
         }
         public static ConnectionState State
@@ -56,6 +63,27 @@ namespace DatabaseHelper
             var result = command.ExecuteScalar();
             
             if(result != null) 
+            {
+                CurrentUser = GetUsers().Where(u => u.Username == username).FirstOrDefault();
+                LogOperation(Guid.Empty, CurrentUser.FullName + " logged in.", "Login");
+            }
+
+            return result != null;
+        }
+
+        public static bool CheckAdminLogin(string username, string password)
+        {
+            // Create sql command
+            string query = "SELECT 1 FROM dbo.[User] WHERE [Username] = @username AND [Password] = @password AND [IsAdmin]=1";
+            SqlCommand command = new SqlCommand(query, _connection);
+
+            // Add paramters
+            command.Parameters.Add(new SqlParameter("@username", username));
+            command.Parameters.Add(new SqlParameter("@password", password));
+
+            var result = command.ExecuteScalar();
+
+            if (result != null)
             {
                 CurrentUser = GetUsers().Where(u => u.Username == username).FirstOrDefault();
                 LogOperation(Guid.Empty, CurrentUser.FullName + " logged in.", "Login");
@@ -127,7 +155,7 @@ namespace DatabaseHelper
         {
             List<User> users = new List<User>();
 
-            string query = "SELECT UserId, FullName, Username, Email, RegistrationDate FROM dbo.[User]";
+            string query = "SELECT UserId, FullName, Username, Email, RegistrationDate, IsAdmin FROM dbo.[User]";
 
             SqlCommand command = new SqlCommand(query, _connection);
 
@@ -141,7 +169,8 @@ namespace DatabaseHelper
                         FullName = reader.GetString(1),
                         Username = reader.GetString(2),
                         Email = reader.GetString(3),
-                        RegistrationDate = reader.GetDateTime(4)
+                        RegistrationDate = reader.GetDateTime(4),
+                        IsAdmin = reader.GetBoolean(5)
                     };
 
                     users.Add(u);
@@ -284,10 +313,11 @@ namespace DatabaseHelper
         }
 
         public static bool Register(User user)
-        {
+        { 
+            // TODO: Register log  ekle 
             if (!UserExists(user))
             {
-                string query = "Insert into [User](Fullname , Email , Username , Password , RegistrationDate) Values (@fullname, @email , @username , @password , @registerdate)";
+                string query = "Insert into [User](Fullname , Email , Username , Password , RegistrationDate, IsAdmin) Values (@fullname, @email , @username , @password , @registerdate, 0)";
                 SqlCommand command = new SqlCommand(query, _connection);
                 command.Parameters.AddWithValue("@fullname", user.FullName);
                 command.Parameters.AddWithValue("@email", user.Email);
@@ -354,6 +384,23 @@ namespace DatabaseHelper
             command.Parameters.AddWithValue("@Details", log.OperationDetails);
             command.Parameters.AddWithValue("@Date", log.OperationDate);
             command.ExecuteNonQuery();
+        }
+
+        public static DataTable GetLogTable()
+        {
+            string query = "select OperationType, FullName , OperationDetails,OperationDate from dbo.[Logs]";
+            SqlCommand command = new SqlCommand(query, _connection);
+            
+            // Create adapter with command
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            
+            // Create empty table
+            DataTable table = new DataTable();
+            
+            // Fill the table
+            adapter.Fill(table);
+
+            return table;
         }
 
     }
